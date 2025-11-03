@@ -6,148 +6,42 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://staticquasar931.github.io/Escape-Road/">
   <title>Escape Road</title>
-  <meta name="description" content="Play Escape Road unblocked right in your browser. The Unity WebGL build runs inside this tab with smooth loading, click to start, and StaticQuasar931 features.">
+  <meta name="description" content="Play Escape Road unblocked in your browser. The Unity WebGL build runs inside this tab with a clean click-to-start overlay and smooth loading.">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="25011401/theme/game.css">
 
   <style>
-    :root{
-      --sq-accent:#4caf50;
-      --sq-accent-2:#00c2ff;
-      --sq-bg:#000;
-      --sq-text:#fff;
-    }
-    html, body { margin: 0; padding: 0; height: 100%; background: var(--sq-bg); color: var(--sq-text); font-family: "Fredoka", system-ui, -apple-system, Arial, sans-serif; }
+    html, body { margin: 0; padding: 0; height: 100%; background: #000; font-family: "Fredoka", system-ui, -apple-system, Arial, sans-serif; }
     #unity-container { position: fixed; inset: 0; display: none; background: #000; }
     #unity-canvas { width: 100%; height: 100%; display: block; background: #000; }
 
     /* Loading UI */
     #loadingBlock { position: fixed; inset: 0; display: grid; place-items: center; background: #000; color: #fff; z-index: 3; overflow: hidden; }
-    .gameloader { max-width: 720px; width: 92vw; margin: 0 auto; text-align: center; position: relative; animation: fadeIn .4s ease-out both; }
+    .gameloader { max-width: 720px; width: 92vw; margin: 0 auto; text-align: center; position: relative; }
     .gameloader-game-name { font-size: 28px; margin-bottom: 14px; letter-spacing: .5px; }
-    .gameloader-logo img { width: 160px; height: auto; border-radius: 12px; box-shadow: 0 0 24px rgba(255,255,255,.15); animation: softFloat 3s ease-in-out infinite; }
+    .gameloader-logo img { width: 160px; height: auto; border-radius: 12px; box-shadow: 0 0 24px rgba(255,255,255,.15); }
     .gameloader-progressbar { width: 100%; height: 12px; background: rgba(255,255,255,.15); border-radius: 999px; overflow: hidden; margin: 18px 0 10px; }
-    .gameloader-progressbar-progress { width: 0%; height: 100%; background: var(--sq-accent); transition: width .2s linear; }
+    .gameloader-progressbar-progress { width: 0%; height: 100%; background: #4caf50; transition: width .2s linear; }
     .gameloader-progress-info { font-size: 14px; opacity: .9; }
     .spinner { width: 44px; height: 44px; border: 4px solid rgba(255,255,255,.2); border-top-color: #fff; border-radius: 50%; margin: 0 auto 18px; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .brand-watermark { position: absolute; bottom: 10px; right: 10px; font-size: 14px; color: #ffffff; opacity: .5; }
     .jss1:before { top: 0; width: 100%; filter: blur(16px); height: 100%; content: ""; display: block; opacity: .5; z-index: 0; position: absolute; background-size: cover; background-position: center; background-image: url("25011401/loading.png"); }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px);} to { opacity:1; transform: translateY(0);} }
-    @keyframes softFloat { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-6px);} }
 
-    /* Click to Start overlay */
-    #startOverlay { position: fixed; inset: 0; display: none; background: rgba(0,0,0,.9); z-index: 4; color: #fff; animation: fadeIn .25s ease-out both; }
+    /* Click to Start overlay to unlock audio and guarantee focus, no new tab */
+    #startOverlay { position: fixed; inset: 0; display: none; background: rgba(0,0,0,.9); z-index: 4; color: #fff; }
     .start-wrap { height: 100%; display: grid; place-items: center; text-align: center; padding: 24px; }
     .start-card { max-width: 560px; width: 92vw; padding: 24px; border-radius: 14px; background: rgba(255,255,255,.06); box-shadow: 0 8px 32px rgba(0,0,0,.6); backdrop-filter: blur(6px); }
     .start-title { font-size: 26px; margin: 0 0 10px; }
     .start-desc { opacity: .9; font-size: 14px; margin-bottom: 18px; }
-    .start-btn { appearance: none; border: 0; padding: 14px 22px; border-radius: 999px; font-size: 16px; cursor: pointer; background: var(--sq-accent); color: #fff; transition: transform .05s ease; }
+    .start-btn { appearance: none; border: 0; padding: 14px 22px; border-radius: 999px; font-size: 16px; cursor: pointer; background: #4caf50; color: #fff; }
     .start-btn:active { transform: translateY(1px); }
 
-    /* Static Menu: square button near top-left shifted right 50px */
-    #staticMenuBtn{
-      position: fixed;
-      top: 16px;
-      left: 50px; /* requested offset */
-      width: 64px;
-      height: 64px;
-      z-index: 6;
-      border-radius: 14px;
-      background: rgba(255,255,255,.08);
-      box-shadow: 0 8px 28px rgba(0,0,0,.4);
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      user-select: none;
-      outline: none;
-      border: 1px solid rgba(255,255,255,.15);
-      transition: transform .08s ease, background .2s ease, box-shadow .2s ease;
-      animation: twinkle 3.6s ease-in-out infinite;
-    }
-    #staticMenuBtn:hover{ background: rgba(255,255,255,.12); box-shadow: 0 10px 34px rgba(0,0,0,.55); }
-    #staticMenuBtn:active{ transform: translateY(1px) scale(.99); }
-    #staticMenuBtn .dot{
-      width: 28px; height: 28px; border-radius: 8px;
-      background: linear-gradient(135deg, var(--sq-accent), var(--sq-accent-2));
-      box-shadow: 0 0 16px rgba(0,194,255,.35), inset 0 0 10px rgba(255,255,255,.25);
-    }
-    @keyframes twinkle{
-      0%,100% { box-shadow: 0 8px 28px rgba(0,0,0,.4);}
-      50%     { box-shadow: 0 8px 36px rgba(0,0,0,.55);}
-    }
+    /* Error area */
+    #errorArea { display: none; color: #ff8a8a; font-size: 14px; margin-top: 10px; white-space: pre-wrap; }
 
-    /* Static Menu panel */
-    #staticMenuPanel{
-      position: fixed;
-      top: 96px;
-      left: 50px;
-      width: min(420px, 92vw);
-      max-height: 70vh;
-      overflow: auto;
-      z-index: 6;
-      padding: 16px;
-      border-radius: 16px;
-      background: rgba(10,10,10,.9);
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: 0 14px 50px rgba(0,0,0,.6);
-      display: none;
-      animation: fadeIn .2s ease-out both;
-    }
-    .menu-row{ display:flex; gap:10px; align-items:center; margin-bottom:10px; }
-    .menu-row a{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:10px 14px; border-radius:12px; text-decoration:none; color:#fff;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      transition: background .2s ease, transform .06s ease;
-    }
-    .menu-row a:hover{ background: rgba(255,255,255,.12); }
-    .menu-row a:active{ transform: translateY(1px); }
-    .menu-title{ font-size:18px; margin:0 0 6px; }
-    .menu-sub{ font-size:13px; opacity:.8; margin:0 0 12px; }
-    .closeMenu{
-      margin-left:auto; appearance:none; border:0; border-radius:10px; padding:8px 12px;
-      background: rgba(255,255,255,.06); color:#fff; cursor:pointer;
-    }
-
-    /* Rotating popups bottom-right (Google Form / Instagram) */
-    .rotator-wrap{
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 6;
-      width: 70px; height: 70px;
-      display: grid; place-items: center;
-      pointer-events: none;
-    }
-    .rotator{
-      position: relative; width: 70px; height: 70px; pointer-events: auto;
-    }
-    .rotator a{
-      position: absolute; inset: 0; display: grid; place-items: center;
-      border-radius: 50%;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: 0 8px 28px rgba(0,0,0,.5);
-      overflow: hidden;
-      transform: scale(0.98);
-      transition: transform .2s ease, opacity .4s ease;
-    }
-    .rotator a:hover{ transform: scale(1); }
-    .rotator img{ width: 80%; height: 80%; object-fit: contain; animation: softFloat 3s ease-in-out infinite; }
-
-    /* Hide for 3 minutes feature */
-    #rotatorClose{
-      position: absolute; top: -10px; right: -10px; width: 24px; height: 24px; border-radius: 50%;
-      display: grid; place-items: center; font-size: 12px; background: rgba(0,0,0,.8); color: #fff;
-      border:1px solid rgba(255,255,255,.2); cursor: pointer; user-select: none;
-    }
-
-    /* Hidden SEO block */
-    #seoBlock{ position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
-
-    .visually-hidden{ position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    /* Accessibility focus */
+    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
   </style>
 
   <script>
@@ -171,17 +65,23 @@
 
     config.gameId = "escape-road";
     config.eventLog = true;
-    config.buildAPI = "lib/event.json"; // relative path for GitHub Pages
+    // Use relative API path so it works on GitHub Pages
+    config.buildAPI = "lib/event.json";
 
+    // Stop logging after cutoff date
     (function(){
       const endLogDate = new Date("2025-03-08T07:31:48.701Z");
       if (new Date() > endLogDate) config.eventLog = false;
     })();
 
+    // Disable promotions when hosted on GameDistribution
     (function(){
-      const parts = location.hostname.split(".");
-      const main = parts.slice(-2).join(".");
-      if (main === "gamedistribution.com") {
+      const isHostOnGD = () => {
+        const parts = location.hostname.split(".");
+        const main = parts.slice(-2).join(".");
+        return main === "gamedistribution.com";
+      };
+      if (isHostOnGD()) {
         config.enableMoreGame = "no";
         config.enablePromotion = false;
         config.eventLog = false;
@@ -193,75 +93,22 @@
       }
     })();
 
-    // Ad SDK stubs to avoid missing script behaviours
+    // Ad SDK stubs to avoid missing-behaviour script errors in build
     window.vungle = window.vungle || {};
     if (!window.vungle.playAd) window.vungle.playAd = function(){ return Promise.resolve({ success: true }); };
     window.gdsdk = window.gdsdk || { showBanner: ()=>{}, destroyBanner: ()=>{}, showAd: ()=>Promise.resolve() };
     window.ysdk = window.ysdk || {};
   </script>
 
-  <!-- gmsoftsdk via RAW GitHub (blob would not work) -->
+  <!-- Use RAW GitHub URL for the SDK, the blob URL will not work as a script -->
   <script id="gmsoft-jssdk" src="https://raw.githubusercontent.com/StaticQuasar931/Escape-Road/main/lib/gmsoftsdk_v5.js" defer></script>
 </head>
 
 <body>
-  <!-- Static Menu button (square) -->
-  <button id="staticMenuBtn" aria-label="Open Static menu">
-    <span class="dot" aria-hidden="true"></span>
-  </button>
-
-  <!-- Static Menu panel -->
-  <section id="staticMenuPanel" aria-label="Static menu panel">
-    <div class="menu-header" style="display:flex; align-items:center; gap:10px;">
-      <h3 class="menu-title">More Unblocked Games by Static</h3>
-      <button class="closeMenu" id="closeMenuBtn">Close</button>
-    </div>
-    <p class="menu-sub">Quick links and helpful stuff. This panel hides when you press Close and can be opened again from the square button.</p>
-    <div class="menu-row">
-      <a href="https://sites.google.com/view/staticquasar931/gm3z" target="_blank" rel="noopener">
-        <img alt="" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" width="20" height="20">
-        Games List
-      </a>
-      <a href="https://sites.google.com/view/staticquasar931" target="_blank" rel="noopener">
-        <img alt="" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" width="20" height="20">
-        Homepage
-      </a>
-      <a href="https://sites.google.com/view/staticquasar931/gm3z/escape-road-fake-gta" target="_blank" rel="noopener">
-        <img alt="" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/icon.png" width="20" height="20">
-        Escape Road page
-      </a>
-    </div>
-    <div class="menu-row">
-      <a href="https://sites.google.com/view/staticquasar931/google-form" target="_blank" rel="noopener">
-        <img alt="" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/GoogleForm.png" width="20" height="20">
-        Suggest a Game
-      </a>
-      <a href="https://www.instagram.com/freeschoolgamepage/" target="_blank" rel="noopener">
-        <img alt="" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/Follow-us--IG.png" width="20" height="20">
-        Instagram
-      </a>
-    </div>
-  </section>
-
-  <!-- Rotating popups bottom-right -->
-  <div class="rotator-wrap" id="rotatorWrap" aria-hidden="false">
-    <div class="rotator" id="rotator">
-      <a id="rotItemA" href="https://sites.google.com/view/staticquasar931/google-form" target="_blank" rel="noopener" title="Request a game">
-        <img alt="Google Form" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/GoogleForm.png">
-        <span id="rotatorClose" title="Hide for 3 minutes">×</span>
-      </a>
-      <a id="rotItemB" href="https://www.instagram.com/freeschoolgamepage/" target="_blank" rel="noopener" title="Follow us on Instagram" style="opacity:0; pointer-events:none;">
-        <img alt="Instagram" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/Images@main/Follow-us--IG.png">
-      </a>
-    </div>
-  </div>
-
-  <!-- Unity canvas -->
   <div id="unity-container" aria-label="Escape Road game area">
     <canvas id="unity-canvas" tabindex="0" aria-label="Escape Road canvas"></canvas>
   </div>
 
-  <!-- Loading UI -->
   <div id="loadingBlock" aria-live="polite">
     <div class="jss31 jss34 jss1" style="position: relative; display: grid; place-items: center; width: 100%; height: 100%;">
       <div class="brand-watermark">25011401</div>
@@ -281,17 +128,17 @@
         <div class="gameloader-progress-info" id="progress_text">Initializing...</div>
 
         <img src="https://thegportal.net/GHub%20Logo%204.svg" alt="The G Portal" style="height: 80px; margin-top: 18px; opacity:.9;">
-        <div id="errorArea" style="display:none;color:#ff8a8a;font-size:14px;margin-top:10px;white-space:pre-wrap;"></div>
+        <div id="errorArea"></div>
       </div>
     </div>
   </div>
 
-  <!-- Click to Start overlay -->
+  <!-- Click to Start overlay to ensure user gesture and no new tab -->
   <div id="startOverlay" role="dialog" aria-modal="true" aria-labelledby="startTitle">
     <div class="start-wrap">
       <div class="start-card">
         <h2 id="startTitle" class="start-title">Click to Start</h2>
-        <p class="start-desc">Press Start to unlock audio and focus the game. No popups.</p>
+        <p class="start-desc">Press the button to start the game. This unlocks audio and focuses the game. No popups.</p>
         <button id="startBtn" class="start-btn">Start</button>
       </div>
     </div>
@@ -308,38 +155,7 @@
     const startOverlay = document.getElementById("startOverlay");
     const startBtn = document.getElementById("startBtn");
 
-    // Static Menu controls
-    const staticMenuBtn = document.getElementById("staticMenuBtn");
-    const staticMenuPanel = document.getElementById("staticMenuPanel");
-    const closeMenuBtn = document.getElementById("closeMenuBtn");
-    staticMenuBtn.addEventListener("click", () => staticMenuPanel.style.display = "block");
-    closeMenuBtn.addEventListener("click", () => staticMenuPanel.style.display = "none");
-
-    // Rotator logic
-    const rotA = document.getElementById("rotItemA");
-    const rotB = document.getElementById("rotItemB");
-    const rotatorClose = document.getElementById("rotatorClose");
-    let rotState = 0;
-    function swapRotator(){
-      rotState ^= 1;
-      if (rotState){
-        rotA.style.opacity = "0"; rotA.style.pointerEvents = "none";
-        rotB.style.opacity = "1"; rotB.style.pointerEvents = "auto";
-      } else {
-        rotB.style.opacity = "0"; rotB.style.pointerEvents = "none";
-        rotA.style.opacity = "1"; rotA.style.pointerEvents = "auto";
-      }
-    }
-    let rotTimer = setInterval(swapRotator, 6000);
-    rotatorClose.addEventListener("click", (e)=>{
-      e.preventDefault();
-      const wrap = document.getElementById("rotatorWrap");
-      wrap.style.display = "none";
-      clearInterval(rotTimer);
-      setTimeout(()=>{ wrap.style.display = "block"; rotTimer = setInterval(swapRotator, 6000); }, 180000);
-    });
-
-    // Load Unity loader
+    // Load Unity loader script
     (function loadUnity() {
       const script = document.createElement("script");
       script.src = loaderUrl;
@@ -365,35 +181,45 @@
 
     function onReady(unityInstance) {
       window.unityInstance = unityInstance;
+
+      // Show canvas and keep loader until we show click-to-start
       container.style.display = "block";
 
-      // Hide loader, then show click overlay
+      // Fallback to hide loader even if progress callback never hits 1
       setTimeout(() => {
         loadingBlock.style.display = "none";
         startOverlay.style.display = "block";
         focusCanvas();
-      }, 600);
+      }, 600); // quick but smooth
 
-      // Try to keep loop active
-      document.addEventListener("visibilitychange", () => { if (!document.hidden) resumeUnityLoopSafely(); });
+      // Safety: if the game loop is paused, try to resume when tab gains focus
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) resumeUnityLoopSafely();
+      });
       window.addEventListener("focus", resumeUnityLoopSafely);
 
+      // Some builds pause on lost focus, poke occasionally after start
       let resumeTick = null;
       const startPoke = () => {
         if (resumeTick) return;
         resumeTick = setInterval(resumeUnityLoopSafely, 1500);
+        // Stop after 15 seconds, should be enough to unstick any paused loop
         setTimeout(() => { clearInterval(resumeTick); resumeTick = null; }, 15000);
       };
 
       startBtn.onclick = async () => {
+        // Unlock audio contexts from various places Unity might keep them
         try {
           const ctxs = [
             unityInstance.audioContext,
             unityInstance.Module && unityInstance.Module.SDL2 && unityInstance.Module.SDL2.audioContext,
             window.AudioContext && window.AudioContext.prototype
           ].filter(Boolean);
-          for (const c of ctxs) { if (typeof c.resume === "function") { try { await c.resume(); } catch(e){} } }
+          for (const c of ctxs) {
+            if (typeof c.resume === "function") { try { await c.resume(); } catch(e){} }
+          }
         } catch(e){}
+
         resumeUnityLoopSafely();
         focusCanvas();
         startOverlay.style.display = "none";
@@ -404,15 +230,33 @@
     function resumeUnityLoopSafely() {
       try {
         const mod = window.unityInstance && window.unityInstance.Module;
-        if (mod && typeof mod.pauseMainLoop === "function") mod.pauseMainLoop(false);
-        if (mod && typeof mod.setThrottledMainLoop === "function") mod.setThrottledMainLoop(false);
+        if (mod && typeof mod.pauseMainLoop === "function") {
+          mod.pauseMainLoop(false);
+        }
+        // Some Unity builds expose setThrottledMainLoop
+        if (mod && typeof mod.setThrottledMainLoop === "function") {
+          mod.setThrottledMainLoop(false);
+        }
       } catch(e){}
     }
-    function focusCanvas() { try { window.focus(); document.getElementById("unity-canvas").focus(); } catch(e){} }
-    function showError(msg) { errorArea.style.display = "block"; errorArea.textContent = msg; progressText.textContent = "Error starting game"; }
+
+    function focusCanvas() {
+      try {
+        window.focus();
+        canvasEl.focus();
+      } catch(e){}
+    }
+
+    function showError(msg) {
+      errorArea.style.display = "block";
+      errorArea.textContent = msg;
+      progressText.textContent = "Error starting game";
+    }
 
     // Leave or reload warning
-    window.onbeforeunload = function () { return "Are you sure you want to leave? Your game session may be lost."; };
+    window.onbeforeunload = function () {
+      return "Are you sure you want to leave? Your game session may be lost.";
+    };
   </script>
 
   <!-- Firebase (Compat) only analytics, non-blocking -->
@@ -434,7 +278,8 @@
           if (window.firebase && !firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
             if (firebase.analytics) {
-              firebase.analytics();
+              const analytics = firebase.analytics();
+              // Safer cookie settings for subpath hosting
               if (typeof window.gtag === "function") {
                 window.gtag("config", firebaseConfig.measurementId, {
                   cookie_domain: location.hostname,
@@ -443,6 +288,10 @@
               }
             }
           }
+          // Helpers
+          window.firebaseSetUserProperties = function(props){ try { firebase.analytics().setUserProperties(props); } catch(e){} };
+          window.firebaseLogEvent = function(name){ try { firebase.analytics().logEvent(name); } catch(e){} };
+          window.firebaseLogEventParameter = function(name, params){ try { firebase.analytics().logEvent(name, params); } catch(e){} };
         } catch(e){
           console.warn("Firebase init warning:", e);
         }
@@ -451,18 +300,5 @@
       else window.addEventListener("load", init);
     })();
   </script>
-
-  <!-- Hidden SEO content -->
-  <div id="seoBlock">
-    <h1>Escape Road Unblocked Game Online</h1>
-    <p>
-      Play Escape Road unblocked directly on this page in your browser. This WebGL build loads inside the tab and uses a clean click to start overlay for audio focus and better performance at school or work. If a version fails to load, try again or check related games on the StaticQuasar931 games list. This page is designed for indexing with a canonical URL, standard metadata, and an accessible layout so that search engines can understand the content. Find more unblocked driving game and city chase game options on our hub.
-      Useful links:
-      <a href="https://sites.google.com/view/staticquasar931/gm3z">Unblocked games list</a>,
-      <a href="https://sites.google.com/view/staticquasar931">StaticQuasar931 homepage</a>,
-      <a href="https://sites.google.com/view/staticquasar931/gm3z/escape-road-fake-gta">Escape Road info page</a>.
-      Keywords: Escape Road unblocked, Escape Road school, city chase game unblocked, police chase game unblocked, driving game unblocked, car game unblocked, working at school, school safe game, static, staticquasar, staticquasar931, static 931, staticq, staticq931, g@me, game, unbl0cked, g@mes.
-    </p>
-  </div>
 </body>
 </html>
