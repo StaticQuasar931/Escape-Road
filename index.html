@@ -3,49 +3,127 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <!-- Enable indexing + set canonical -->
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://staticquasar931.github.io/Escape-Road/">
   <title>Escape Road</title>
-  <meta name="description" content="Play Escape Road unblocked in your browser. The Unity WebGL build runs inside this tab with a clean click-to-start overlay and smooth loading.">
+  <meta name="description" content="Play Escape Road unblocked right in your browser. No redirects — the Unity WebGL build loads in this tab with a full-screen canvas and fast loading.">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="25011401/theme/game.css">
 
   <style>
-    html, body { margin: 0; padding: 0; height: 100%; background: #000; font-family: "Fredoka", system-ui, -apple-system, Arial, sans-serif; }
-    #unity-container { position: fixed; inset: 0; display: none; background: #000; }
-    #unity-canvas { width: 100%; height: 100%; display: block; background: #000; }
-
-    /* Loading UI */
-    #loadingBlock { position: fixed; inset: 0; display: grid; place-items: center; background: #000; color: #fff; z-index: 3; overflow: hidden; }
-    .gameloader { max-width: 720px; width: 92vw; margin: 0 auto; text-align: center; position: relative; }
-    .gameloader-game-name { font-size: 28px; margin-bottom: 14px; letter-spacing: .5px; }
-    .gameloader-logo img { width: 160px; height: auto; border-radius: 12px; box-shadow: 0 0 24px rgba(255,255,255,.15); }
-    .gameloader-progressbar { width: 100%; height: 12px; background: rgba(255,255,255,.15); border-radius: 999px; overflow: hidden; margin: 18px 0 10px; }
-    .gameloader-progressbar-progress { width: 0%; height: 100%; background: #4caf50; transition: width .2s linear; }
-    .gameloader-progress-info { font-size: 14px; opacity: .9; }
-    .spinner { width: 44px; height: 44px; border: 4px solid rgba(255,255,255,.2); border-top-color: #fff; border-radius: 50%; margin: 0 auto 18px; animation: spin 1s linear infinite; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #000;
+      font-family: "Fredoka", system-ui, -apple-system, Arial, sans-serif;
+    }
+    #unity-container {
+      position: fixed;
+      inset: 0;
+      display: none;
+      background: #000;
+    }
+    #unity-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #000;
+    }
+    #loadingBlock {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: #000;
+      color: #fff;
+      z-index: 2;
+      overflow: hidden;
+    }
+    .gameloader {
+      max-width: 720px;
+      width: 92vw;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+    }
+    .gameloader-game-name {
+      font-size: 28px;
+      margin-bottom: 14px;
+      letter-spacing: .5px;
+    }
+    .gameloader-logo img {
+      width: 160px;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 24px rgba(255,255,255,.15);
+    }
+    .gameloader-progressbar {
+      width: 100%;
+      height: 12px;
+      background: rgba(255,255,255,.15);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 18px 0 10px;
+    }
+    .gameloader-progressbar-progress {
+      width: 0%;
+      height: 100%;
+      background: #4caf50;
+      transition: width .2s linear;
+    }
+    .gameloader-progress-info {
+      font-size: 14px;
+      opacity: .9;
+    }
+    .brand-watermark {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 14px;
+      color: #ffffff;
+      opacity: .5;
+    }
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid rgba(255,255,255,.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      margin: 0 auto 18px;
+      animation: spin 1s linear infinite;
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .brand-watermark { position: absolute; bottom: 10px; right: 10px; font-size: 14px; color: #ffffff; opacity: .5; }
-    .jss1:before { top: 0; width: 100%; filter: blur(16px); height: 100%; content: ""; display: block; opacity: .5; z-index: 0; position: absolute; background-size: cover; background-position: center; background-image: url("25011401/loading.png"); }
 
-    /* Click to Start overlay to unlock audio and guarantee focus, no new tab */
-    #startOverlay { position: fixed; inset: 0; display: none; background: rgba(0,0,0,.9); z-index: 4; color: #fff; }
-    .start-wrap { height: 100%; display: grid; place-items: center; text-align: center; padding: 24px; }
-    .start-card { max-width: 560px; width: 92vw; padding: 24px; border-radius: 14px; background: rgba(255,255,255,.06); box-shadow: 0 8px 32px rgba(0,0,0,.6); backdrop-filter: blur(6px); }
-    .start-title { font-size: 26px; margin: 0 0 10px; }
-    .start-desc { opacity: .9; font-size: 14px; margin-bottom: 18px; }
-    .start-btn { appearance: none; border: 0; padding: 14px 22px; border-radius: 999px; font-size: 16px; cursor: pointer; background: #4caf50; color: #fff; }
-    .start-btn:active { transform: translateY(1px); }
+    /* Subtle blurred background while loading */
+    .jss1:before {
+      top: 0;
+      width: 100%;
+      filter: blur(16px);
+      height: 100%;
+      content: "";
+      display: block;
+      opacity: .5;
+      z-index: 0;
+      position: absolute;
+      background-size: cover;
+      background-position: center;
+      background-image: url("25011401/loading.png");
+    }
 
     /* Error area */
-    #errorArea { display: none; color: #ff8a8a; font-size: 14px; margin-top: 10px; white-space: pre-wrap; }
-
-    /* Accessibility focus */
-    .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    #errorArea {
+      display: none;
+      color: #ff8080;
+      font-size: 14px;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
   </style>
 
   <script>
-    // Unity build config
+    // ---------- Unity build + config ----------
     const versionFolder = "25011401/";
     const buildUrl = versionFolder + "Build";
     const loaderUrl = buildUrl + "/escape-road-v25011401.loader.js";
@@ -59,22 +137,25 @@
       productName: "Escape Road",
       productVersion: "25011401",
       pubId: "",
+      // Helpful toggles for performance
       devicePixelRatio: Math.min(2, window.devicePixelRatio || 1),
       matchWebGLToCanvasSize: true
     };
 
     config.gameId = "escape-road";
     config.eventLog = true;
-    // Use relative API path so it works on GitHub Pages
+    // Make API paths relative so it works on GitHub Pages under /Escape-Road/
     config.buildAPI = "lib/event.json";
 
-    // Stop logging after cutoff date
+    // Stop event logging after a cutoff
     (function(){
       const endLogDate = new Date("2025-03-08T07:31:48.701Z");
       if (new Date() > endLogDate) config.eventLog = false;
     })();
 
-    // Disable promotions when hosted on GameDistribution
+    // Disable promotion if hosted on GameDistribution
+    config.enableMoreGame = "yes";
+    config.enablePromotion = true;
     (function(){
       const isHostOnGD = () => {
         const parts = location.hostname.split(".");
@@ -85,36 +166,29 @@
         config.enableMoreGame = "no";
         config.enablePromotion = false;
         config.eventLog = false;
-        const segs = location.pathname.split("/");
-        config.gdGameId = segs[1] || "";
-      } else {
-        config.enableMoreGame = "yes";
-        config.enablePromotion = true;
+        const pathSegments = location.pathname.split("/");
+        config.gdGameId = pathSegments[1] || "";
       }
     })();
-
-    // Ad SDK stubs to avoid missing-behaviour script errors in build
-    window.vungle = window.vungle || {};
-    if (!window.vungle.playAd) window.vungle.playAd = function(){ return Promise.resolve({ success: true }); };
-    window.gdsdk = window.gdsdk || { showBanner: ()=>{}, destroyBanner: ()=>{}, showAd: ()=>Promise.resolve() };
-    window.ysdk = window.ysdk || {};
   </script>
 
-  <!-- Use RAW GitHub URL for the SDK, the blob URL will not work as a script -->
-  <script id="gmsoft-jssdk" src="https://raw.githubusercontent.com/StaticQuasar931/Escape-Road/main/lib/gmsoftsdk_v5.js" defer></script>
+  <!-- Make SDK path relative (works on GitHub Pages) -->
+  <script id="gmsoft-jssdk" src="lib/gmsoftsdk_v5.js" defer></script>
 </head>
 
 <body>
-  <div id="unity-container" aria-label="Escape Road game area">
-    <canvas id="unity-canvas" tabindex="0" aria-label="Escape Road canvas"></canvas>
+  <!-- Fullscreen canvas container -->
+  <div id="unity-container">
+    <canvas id="unity-canvas" tabindex="0"></canvas>
   </div>
 
-  <div id="loadingBlock" aria-live="polite">
+  <!-- Loading UI -->
+  <div id="loadingBlock">
     <div class="jss31 jss34 jss1" style="position: relative; display: grid; place-items: center; width: 100%; height: 100%;">
       <div class="brand-watermark">25011401</div>
 
       <div class="gameloader">
-        <div class="spinner" aria-hidden="true"></div>
+        <div class="spinner"></div>
 
         <div class="gameloader-logo" style="margin-bottom: 12px;">
           <img id="game-logo" src="25011401/loading.png" alt="Escape Road">
@@ -122,24 +196,13 @@
 
         <div class="gameloader-game-name">Escape Road</div>
 
-        <div class="gameloader-progressbar" aria-hidden="true">
+        <div class="gameloader-progressbar">
           <div class="gameloader-progressbar-progress" id="progress_fill"></div>
         </div>
         <div class="gameloader-progress-info" id="progress_text">Initializing...</div>
 
         <img src="https://thegportal.net/GHub%20Logo%204.svg" alt="The G Portal" style="height: 80px; margin-top: 18px; opacity:.9;">
         <div id="errorArea"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Click to Start overlay to ensure user gesture and no new tab -->
-  <div id="startOverlay" role="dialog" aria-modal="true" aria-labelledby="startTitle">
-    <div class="start-wrap">
-      <div class="start-card">
-        <h2 id="startTitle" class="start-title">Click to Start</h2>
-        <p class="start-desc">Press the button to start the game. This unlocks audio and focuses the game. No popups.</p>
-        <button id="startBtn" class="start-btn">Start</button>
       </div>
     </div>
   </div>
@@ -152,100 +215,37 @@
     const canvasEl = document.getElementById("unity-canvas");
     const loadingBlock = document.getElementById("loadingBlock");
     const errorArea = document.getElementById("errorArea");
-    const startOverlay = document.getElementById("startOverlay");
-    const startBtn = document.getElementById("startBtn");
 
-    // Load Unity loader script
+    // Load the Unity loader script dynamically
     (function loadUnity() {
       const script = document.createElement("script");
       script.src = loaderUrl;
       script.async = true;
       script.onload = () => {
         if (typeof createUnityInstance !== "function") {
-          showError("Unity loader did not expose createUnityInstance");
+          showError("Unity loader didn't expose createUnityInstance.");
           return;
         }
-        createUnityInstance(canvasEl, config, onProgress).then(onReady).catch((err) => {
-          showError(String(err || "Failed to start Unity instance"));
+        createUnityInstance(canvasEl, config, (progress) => {
+          const pct = Math.max(0, Math.min(1, progress));
+          progressEl.style.width = (pct * 100).toFixed(1) + "%";
+          progressText.textContent = pct >= 0.99 ? "Game Loading..." : ("Downloading file: " + Math.round(pct * 100) + "%");
+        }).then((unityInstance) => {
+          window.unityInstance = unityInstance;
+          container.style.display = "block";
+          // Small delay to smooth transition
+          setTimeout(() => {
+            loadingBlock.style.display = "none";
+            window.focus();
+            canvasEl.focus();
+          }, 600);
+        }).catch((err) => {
+          showError(String(err || "Failed to start Unity instance."));
         });
       };
       script.onerror = () => showError("Failed to load Unity loader script: " + loaderUrl);
       document.body.appendChild(script);
     })();
-
-    function onProgress(p) {
-      const pct = Math.max(0, Math.min(1, p || 0));
-      progressEl.style.width = (pct * 100).toFixed(1) + "%";
-      progressText.textContent = pct >= 0.99 ? "Finalizing..." : ("Downloading file: " + Math.round(pct * 100) + "%");
-    }
-
-    function onReady(unityInstance) {
-      window.unityInstance = unityInstance;
-
-      // Show canvas and keep loader until we show click-to-start
-      container.style.display = "block";
-
-      // Fallback to hide loader even if progress callback never hits 1
-      setTimeout(() => {
-        loadingBlock.style.display = "none";
-        startOverlay.style.display = "block";
-        focusCanvas();
-      }, 600); // quick but smooth
-
-      // Safety: if the game loop is paused, try to resume when tab gains focus
-      document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) resumeUnityLoopSafely();
-      });
-      window.addEventListener("focus", resumeUnityLoopSafely);
-
-      // Some builds pause on lost focus, poke occasionally after start
-      let resumeTick = null;
-      const startPoke = () => {
-        if (resumeTick) return;
-        resumeTick = setInterval(resumeUnityLoopSafely, 1500);
-        // Stop after 15 seconds, should be enough to unstick any paused loop
-        setTimeout(() => { clearInterval(resumeTick); resumeTick = null; }, 15000);
-      };
-
-      startBtn.onclick = async () => {
-        // Unlock audio contexts from various places Unity might keep them
-        try {
-          const ctxs = [
-            unityInstance.audioContext,
-            unityInstance.Module && unityInstance.Module.SDL2 && unityInstance.Module.SDL2.audioContext,
-            window.AudioContext && window.AudioContext.prototype
-          ].filter(Boolean);
-          for (const c of ctxs) {
-            if (typeof c.resume === "function") { try { await c.resume(); } catch(e){} }
-          }
-        } catch(e){}
-
-        resumeUnityLoopSafely();
-        focusCanvas();
-        startOverlay.style.display = "none";
-        startPoke();
-      };
-    }
-
-    function resumeUnityLoopSafely() {
-      try {
-        const mod = window.unityInstance && window.unityInstance.Module;
-        if (mod && typeof mod.pauseMainLoop === "function") {
-          mod.pauseMainLoop(false);
-        }
-        // Some Unity builds expose setThrottledMainLoop
-        if (mod && typeof mod.setThrottledMainLoop === "function") {
-          mod.setThrottledMainLoop(false);
-        }
-      } catch(e){}
-    }
-
-    function focusCanvas() {
-      try {
-        window.focus();
-        canvasEl.focus();
-      } catch(e){}
-    }
 
     function showError(msg) {
       errorArea.style.display = "block";
@@ -253,51 +253,54 @@
       progressText.textContent = "Error starting game";
     }
 
-    // Leave or reload warning
+    // Keep canvas sized correctly on resize
+    addEventListener("resize", () => {
+      // Unity with matchWebGLToCanvasSize handles this, but we keep hook here if needed later
+    });
+
+    // Leave/reload warning
     window.onbeforeunload = function () {
       return "Are you sure you want to leave? Your game session may be lost.";
     };
   </script>
 
-  <!-- Firebase (Compat) only analytics, non-blocking -->
-  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics-compat.js" defer></script>
+  <!-- Firebase (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics-compat.js"></script>
   <script>
+    // For Firebase JS SDK v7.20.0+ measurementId is optional but needed for analytics
     (function(){
-      const init = () => {
-        try {
-          const firebaseConfig = {
-            apiKey: "AIzaSyAwZ4bK-7JjO1sTWJQct_n0j2prA-w14jM",
-            authDomain: "escape-road.firebaseapp.com",
-            projectId: "escape-road",
-            storageBucket: "escape-road.firebasestorage.app",
-            messagingSenderId: "828919022324",
-            appId: "1:828919022324:web:acc6136ddbd55d303254a1",
-            measurementId: "G-1KL9BG7P9V"
-          };
-          if (window.firebase && !firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-            if (firebase.analytics) {
-              const analytics = firebase.analytics();
-              // Safer cookie settings for subpath hosting
-              if (typeof window.gtag === "function") {
-                window.gtag("config", firebaseConfig.measurementId, {
-                  cookie_domain: location.hostname,
-                  cookie_flags: "SameSite=None;Secure"
-                });
-              }
-            }
-          }
-          // Helpers
-          window.firebaseSetUserProperties = function(props){ try { firebase.analytics().setUserProperties(props); } catch(e){} };
-          window.firebaseLogEvent = function(name){ try { firebase.analytics().logEvent(name); } catch(e){} };
-          window.firebaseLogEventParameter = function(name, params){ try { firebase.analytics().logEvent(name, params); } catch(e){} };
-        } catch(e){
-          console.warn("Firebase init warning:", e);
-        }
+      const firebaseConfig = {
+        apiKey: "AIzaSyAwZ4bK-7JjO1sTWJQct_n0j2prA-w14jM",
+        authDomain: "escape-road.firebaseapp.com",
+        projectId: "escape-road",
+        storageBucket: "escape-road.firebasestorage.app",
+        messagingSenderId: "828919022324",
+        appId: "1:828919022324:web:acc6136ddbd55d303254a1",
+        measurementId: "G-1KL9BG7P9V"
       };
-      if (document.readyState === "complete") init();
-      else window.addEventListener("load", init);
+      try {
+        if (window.firebase && !firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+          if (firebase.analytics) {
+            firebase.analytics();
+          }
+        }
+      } catch (e) {
+        // Non-fatal: analytics init failure shouldn't block the game
+        console.warn("Firebase init warning:", e);
+      }
+
+      // Optional helpers (safe if analytics not available)
+      window.firebaseSetUserProperties = function(props){
+        try { firebase.analytics().setUserProperties(props); } catch(e){}
+      };
+      window.firebaseLogEvent = function(name){
+        try { firebase.analytics().logEvent(name); } catch(e){}
+      };
+      window.firebaseLogEventParameter = function(name, params){
+        try { firebase.analytics().logEvent(name, params); } catch(e){}
+      };
     })();
   </script>
 </body>
